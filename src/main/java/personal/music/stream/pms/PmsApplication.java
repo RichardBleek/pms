@@ -21,7 +21,10 @@ public class PmsApplication {
     @Bean
     RouterFunction<?> routes(MixService mixService){
         return route(RequestPredicates.GET("/mixes"),
-                request -> ServerResponse.ok().body(mixService.mixStream(), Mix.class));
+                request -> ServerResponse.ok().body(mixService.mixStream(), Mix.class))
+                .andRoute(RequestPredicates.GET("/mixes/{id}"),
+                        request -> ServerResponse.ok().body(
+                                mixService.mixMono(request.pathVariable("id")), Mix.class));
     }
 
 }
