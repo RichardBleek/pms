@@ -27,7 +27,7 @@ public class PmsApplication {
                 .andRoute(RequestPredicates.GET("/mixes/{id}"),
                         request -> ServerResponse.ok().body(
                                 mixService.mixMono(request.pathVariable("id")), Mix.class))
-                .andRoute(RequestPredicates.GET("file/{fileName}"),
+                .andRoute(RequestPredicates.GET("/file/{fileName}"),
                         request -> ServerResponse.ok().body(
                                 fileService.streamFile(request.pathVariable("fileName")), Resource.class
                         ));
