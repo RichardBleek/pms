@@ -27,3 +27,8 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+
+### MUSIC RESOURCE FILES ###
+src/main/resources/mixes/*.mp3
+src/main/resources/mixes/*.m4a
+src/main/resources/mixes/*.jpg
