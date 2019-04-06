@@ -3,6 +3,7 @@ package personal.music.stream.pms.feed;
 import java.util.Collections;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,11 +19,21 @@ import com.rometools.rome.feed.rss.Image;
 import com.rometools.rome.feed.rss.Item;
 import com.rometools.rome.feed.synd.SyndPerson;
 
+import personal.music.stream.pms.mix.Mix;
+import personal.music.stream.pms.mix.MixService;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @RestController
 public class FeedController {
+
+    @Autowired
+    MixService mixService;
  
     @GetMapping(path = "/rss")
-    public Channel rss() {
+    public Mono<Channel> rss() {
+        Flux<Mix> flux = mixService.mixStream();
+
         Channel channel = new Channel();
         channel.setFeedType("rss_2.0");
         channel.setTitle("HowToDoInJava Feed");
@@ -61,7 +72,7 @@ public class FeedController {
  
         channel.setItems(Collections.singletonList(item));
         //Like more Entries here about different new topics
-        return channel;
+        return Mono.just(channel);
     }
  
     @GetMapping(path = "/atom")
