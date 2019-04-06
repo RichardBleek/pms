@@ -15,7 +15,8 @@ public class MixService {
 
     MixService() {
         Stream.of("semblance","slipstream-currents").forEach(s -> repo.put(
-                  s, new Mix(s, s, "http://localhost:8080/"+s+".jpg", "http://localhost:8080/"+s+".m4a")));
+                  s, new Mix(s, s, "http://localhost:8080/file/"+s+".jpg",
+                       "http://localhost:8080/file/"+s+".m4a")));
     }
 
     public Flux<Mix> mixStream() {
