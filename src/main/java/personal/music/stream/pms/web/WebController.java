@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class WebController {
 
+	@GetMapping("/player")
+	public String player() {
+		return "index";
+	}
+
 	@GetMapping("/player/{mix_id}")
 	public String player(@PathVariable String mix_id, Model model) {
 		model.addAttribute("mix_id", mix_id);
