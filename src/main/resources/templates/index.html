@@ -8,7 +8,7 @@
 		<div id="list_music">
 		</div>
 		<div id="play_music">
-			<audio th:src="@{http://localhost:8080/mixes/} + ${mix_id}" id="audio"></audio>
+			<audio th:src="@{http://localhost:8080/file/} + ${mix_id} + @{.m4a}" id="audio"></audio>
 			<br>
 			<button onclick="audio.play();">Play</button>
 			<button onclick="audio.pause();">Pause</button>
