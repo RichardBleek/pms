@@ -13,7 +13,7 @@ public class MixService {
     Map<String, Mix> repo = new HashMap<>();
 
     MixService() {
-        Mix.getDummy().forEach(mix -> repo.put(mix.getName(), mix));
+        Mix.getDummy().forEach(mix -> repo.put(mix.getId(), mix));
     }
 
     public Flux<Mix> mixStream() {
