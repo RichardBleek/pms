@@ -48,12 +48,9 @@ public class FeedController {
  
         List<Item> items = new ArrayList<>();
 
-        Item bla = new Item();
-        bla.setTitle("BOEH");
-        items.add(bla);
-
-        Flux<Mix> mixStream = mixService.mixStream();
-        mixStream.map(this::toItem).map(items::add);
+        for (Mix m : mixService.mixCollection()) {
+            items.add(toItem(m));
+        }
         channel.setItems(items);
 
         return Mono.just(channel);

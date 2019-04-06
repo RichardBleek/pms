@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -21,6 +22,10 @@ public class MixService {
 
     public Flux<Mix> mixStream() {
         return Flux.fromStream(repo.values().stream());
+    }
+
+    public Collection<Mix> mixCollection() {
+        return repo.values();
     }
 
     public Mono<Mix> mixMono(String id) {
