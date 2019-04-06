@@ -6,14 +6,16 @@ import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class MixService {
 
-    Map<String, Mix> repo = new HashMap<>();
+    private Map<String, Mix> repo = new HashMap<>();
 
     MixService() {
-        Mix.getDummy().forEach(mix -> repo.put(mix.getId(), mix));
+        Stream.of("semblance","slipstream-currents").forEach(s -> repo.put(
+                  s, new Mix(s, s, "http://localhost:8080/"+s+".jpg", "http://localhost:8080/"+s+".m4a")));
     }
 
     public Flux<Mix> mixStream() {
