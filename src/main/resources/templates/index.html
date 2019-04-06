@@ -5,8 +5,14 @@
 </head>
 <body>
 	<div>
-		<div id="list_music"></div>
-		<div id="play_music"></div>
+		<div id="list_music">
+		</div>
+		<div id="play_music">
+			<audio th:src="@{http://localhost:8080/mixes/} + ${mix_id}" id="audio"></audio>
+			<br>
+			<button onclick="audio.play();">Play</button>
+			<button onclick="audio.pause();">Pause</button>
+		</div>
 	</div>
 </body>
 </html>
