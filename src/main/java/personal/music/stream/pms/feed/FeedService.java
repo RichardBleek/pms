@@ -27,18 +27,18 @@ public class FeedService {
     public Mono<Channel> rss() {
         Channel channel = new Channel();
         channel.setFeedType("rss_2.0");
-        channel.setTitle("PMS Personal Music Stream");
+        channel.setTitle("Personal Music Stream - Jaydee music");
         channel.setDescription("Stream you personal music");
-        channel.setLink("https://pm.stream");
-        channel.setUri("https://pm.stream");
-        channel.setGenerator("Dieselgenerator");
+        channel.setLink("http://rbleek.com/rss");
+        channel.setUri("http://rbleek.com/rss");
+        channel.setGenerator("Generic Generator");
         channel.setManagingEditor("Team Anything");
  
         Image image = new Image();
-        image.setUrl("https://howtodoinjava.com/wp-content/uploads/2015/05/howtodoinjava_logo-55696c1cv1_site_icon-32x32.png");
+        image.setUrl("https://rbleek.com/file/channel-image.jpg");
         image.setTitle("Personal music stream");
-        image.setHeight(32);
-        image.setWidth(32);
+        image.setHeight(288);
+        image.setWidth(288);
         channel.setImage(image);
  
         Date postDate = new Date();

@@ -11,10 +11,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class FileService {
 
+    private Logger log = LoggerFactory.getLogger(FileService.class);
+
     @Value("${pms.files-folder}")
     String filesFolder;
-
-    Logger log = LoggerFactory.getLogger(FileService.class);
 
     private ResourceLoader resourceLoader;
 
