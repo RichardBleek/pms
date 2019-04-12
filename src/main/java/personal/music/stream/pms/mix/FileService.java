@@ -1,5 +1,8 @@
 package personal.music.stream.pms.mix;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -8,6 +11,11 @@ import reactor.core.publisher.Mono;
 @Service
 public class FileService {
 
+    @Value("${pms.files-folder}")
+    String filesFolder;
+
+    Logger log = LoggerFactory.getLogger(FileService.class);
+
     private ResourceLoader resourceLoader;
 
     public FileService(ResourceLoader resourceLoader) {
@@ -15,8 +23,8 @@ public class FileService {
     }
 
     public Mono<Resource> streamFile(String fileName) {
-        System.out.println("streaming file: " + fileName);
-        Resource result = resourceLoader.getResource("mixes/" + fileName);
+        log.info("streaming file: {}", fileName);
+        Resource result = resourceLoader.getResource("file:" + filesFolder + fileName);
         return Mono.just(result);
     }
 }
