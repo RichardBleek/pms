@@ -1,5 +1,6 @@
 package personal.music.stream.pms;
 
+import com.rometools.rome.feed.rss.Channel;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import personal.music.stream.pms.feed.FeedService;
 import personal.music.stream.pms.mix.FileService;
 import personal.music.stream.pms.mix.Mix;
 import personal.music.stream.pms.mix.MixService;
@@ -21,7 +23,7 @@ public class PmsApplication {
 	}
 
     @Bean
-    RouterFunction<?> routes(MixService mixService, FileService fileService){
+    RouterFunction<?> routes(MixService mixService, FileService fileService, FeedService feedService){
         return route(RequestPredicates.GET("/mixes"),
                 request -> ServerResponse.ok().body(mixService.mixStream(), Mix.class))
                 .andRoute(RequestPredicates.GET("/mixes/{id}"),
@@ -30,6 +32,10 @@ public class PmsApplication {
                 .andRoute(RequestPredicates.GET("/file/{fileName}"),
                         request -> ServerResponse.ok().body(
                                 fileService.streamFile(request.pathVariable("fileName")), Resource.class
+                        ))
+                .andRoute(RequestPredicates.GET("/rss"),
+                        request -> ServerResponse.ok().body(
+                               feedService.rss(), Channel.class
                         ));
     }
 
