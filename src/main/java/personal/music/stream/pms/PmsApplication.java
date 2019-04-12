@@ -1,6 +1,5 @@
 package personal.music.stream.pms;
 
-import com.rometools.rome.feed.rss.Channel;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import personal.music.stream.pms.feed.Channel;
 import personal.music.stream.pms.feed.FeedService;
 import personal.music.stream.pms.mix.FileService;
 import personal.music.stream.pms.mix.Mix;

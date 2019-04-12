@@ -5,13 +5,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.rometools.rome.feed.rss.Category;
-import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Image;
 import com.rometools.rome.feed.rss.Item;
 
@@ -22,7 +18,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class FeedService {
 
-    MixService mixService;
+    private MixService mixService;
 
     public FeedService(MixService mixService) {
         this.mixService = mixService;
@@ -40,7 +36,7 @@ public class FeedService {
  
         Image image = new Image();
         image.setUrl("https://howtodoinjava.com/wp-content/uploads/2015/05/howtodoinjava_logo-55696c1cv1_site_icon-32x32.png");
-        image.setTitle("HowToDoInJava Feed");
+        image.setTitle("Personal music stream");
         image.setHeight(32);
         image.setWidth(32);
         channel.setImage(image);
@@ -48,12 +44,7 @@ public class FeedService {
         Date postDate = new Date();
         channel.setPubDate(postDate);
  
-        List<Item> items = new ArrayList<>();
-
-        for (Mix m : mixService.mixCollection()) {
-            items.add(toItem(m));
-        }
-        channel.setItems(items);
+        mixService.mixStream().map(this::toItem).subscribe(channel::addItem);
 
         return Mono.just(channel);
     }
