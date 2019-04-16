@@ -27,13 +27,13 @@ public class FeedService {
         channel.setFeedType("rss_2.0");
         channel.setTitle("Personal Music Stream - Jaydee music");
         channel.setDescription("Stream you personal music");
-        channel.setLink("http://rbleek.com/rss");
-        channel.setUri("http://rbleek.com/rss");
+        channel.setLink("http://rbleek.com/jaydee/rss");
+        channel.setUri("http://rbleek.com/jaydee/rss");
         channel.setGenerator("Generic Generator");
         channel.setManagingEditor("Team Anything");
  
         Image image = new Image();
-        image.setUrl("https://rbleek.com/file/channel-image.jpg");
+        image.setUrl("https://rbleek.com/jaydee/file/channel-image.jpg");
         image.setTitle("Personal music stream");
         image.setHeight(288);
         image.setWidth(288);

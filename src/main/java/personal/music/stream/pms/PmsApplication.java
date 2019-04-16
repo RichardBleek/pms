@@ -24,16 +24,16 @@ public class PmsApplication {
 
     @Bean
     RouterFunction<?> routes(MixService mixService, FileService fileService, FeedService feedService){
-        return route(RequestPredicates.GET("/mixes"),
+        return route(RequestPredicates.GET("/jaydee/mixes"),
                 request -> ServerResponse.ok().body(mixService.mixStream(), Mix.class))
-                .andRoute(RequestPredicates.GET("/mixes/{id}"),
+                .andRoute(RequestPredicates.GET("/jaydee/mixes/{id}"),
                         request -> ServerResponse.ok().body(
                                 mixService.mixMono(request.pathVariable("id")), Mix.class))
-                .andRoute(RequestPredicates.GET("/file/{fileName}"),
+                .andRoute(RequestPredicates.GET("/jaydee/file/{fileName}"),
                         request -> ServerResponse.ok().body(
                                 fileService.streamFile(request.pathVariable("fileName")), Resource.class
                         ))
-                .andRoute(RequestPredicates.GET("/rss"),
+                .andRoute(RequestPredicates.GET("/jaydee/rss"),
                         request -> ServerResponse.ok().body(
                                feedService.rss(), Channel.class
                         ));

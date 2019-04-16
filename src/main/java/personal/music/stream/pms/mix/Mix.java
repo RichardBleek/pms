@@ -47,11 +47,4 @@ public class Mix {
     public void setFullUrl(String fullUrl) {
         this.fullUrl = fullUrl;
     }
-
-    public static List<Mix> getDummy() {
-        return List.of(new Mix("a","a", "http://localhost:8080/mixes/a.mp3", "http://localhost:8080/mixes/a.jpg"),
-                new Mix("b","b", "http://localhost:8080/mixes/b.mp3", "http://localhost:8080/mixes/b.jpg"),
-                new Mix("c","c", "http://localhost:8080/mixes/c.mp3", "http://localhost:8080/mixes/c.jpg"),
-                new Mix("d","d", "http://localhost:8080/mixes/d.mp3", "http://localhost:8080/mixes/d.jpg"));
-    }
 }

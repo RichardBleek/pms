@@ -36,8 +36,8 @@ public class MixService {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(resource.getFile()));
             reader.lines().forEach(s -> repo.put(
-                    s, new Mix(s, s, "http://rbleek.com/file/"+s+".jpg",
-                            "http://rbleek.com/file/"+s+".m4a")));
+                    s, new Mix(s, s, "http://rbleek.com/jaydee/file/"+s+".jpg",
+                            "http://rbleek.com/jaydee/file/"+s+".m4a")));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
