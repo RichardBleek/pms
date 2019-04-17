@@ -1,13 +1,13 @@
 package personal.music.stream.pms.feed;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+import java.util.List;
 
+import com.rometools.rome.feed.synd.*;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedOutput;
 import org.springframework.stereotype.Service;
-
-import com.rometools.rome.feed.rss.Category;
-import com.rometools.rome.feed.rss.Image;
-import com.rometools.rome.feed.rss.Item;
 
 import personal.music.stream.pms.mix.Mix;
 import personal.music.stream.pms.mix.MixService;
@@ -22,39 +22,50 @@ public class FeedService {
         this.mixService = mixService;
     }
 
-    public Mono<Channel> rss() {
-        Channel channel = new Channel();
-        channel.setFeedType("rss_2.0");
-        channel.setTitle("Personal Music Stream - Jaydee music");
-        channel.setDescription("Stream you personal music");
-        channel.setLink("http://rbleek.com/jaydee/rss");
-        channel.setUri("http://rbleek.com/jaydee/rss");
-        channel.setGenerator("Generic Generator");
-        channel.setManagingEditor("Team Anything");
- 
-        Image image = new Image();
-        image.setUrl("https://rbleek.com/jaydee/file/channel-image.jpg");
+    public Mono<SyndFeed> syndFeed() {
+        SyndFeed feed = new SyndFeedImpl();
+        feed.setFeedType("rss_2.0");
+        feed.setTitle("Personal Music Stream - Jaydee music");
+        feed.setDescription("Stream you personal music");
+        feed.setLink("http://rbleek.com/jaydee/rss");
+
+        SyndImageImpl image = new SyndImageImpl();
+        image.setUrl("http://rbleek.com/jaydee/file/channel-image.jpg");
         image.setTitle("Personal music stream");
         image.setHeight(288);
         image.setWidth(288);
-        channel.setImage(image);
- 
-        Date postDate = new Date();
-        channel.setPubDate(postDate);
- 
-        mixService.mixStream().map(this::toItem).subscribe(channel::addItem);
+        feed.setImage(image);
 
-        return Mono.just(channel);
+        List<SyndEntry> entries = new ArrayList<>();
+        mixService.mixStream().map(this::toEntry).subscribe(entries::add);
+        feed.setEntries(entries);
+
+        return Mono.just(feed);
     }
 
-    public Item toItem(Mix mix) {
-        Item item = new Item();
-        item.setLink(mix.getFullUrl());
-        item.setTitle(mix.getName());
-        item.setUri(mix.getFullUrl());
-        Category category = new Category();
-        category.setValue("Music");
-        item.setCategories(Collections.singletonList(category));
-        return item;
+    private SyndEntry toEntry(Mix mix) {
+        SyndEntry entry = new SyndEntryImpl();
+        entry.setLink(mix.getFullUrl());
+        entry.setTitle(mix.getName());
+        entry.setUri(mix.getFullUrl());
+        SyndCategory category = new SyndCategoryImpl();
+        category.setName("music");
+        entry.setCategories(Collections.singletonList(category));
+        return entry;
+
+    }
+
+    public Mono<String> syndFeedString() {
+        return syndFeed().map(this::outputFeed);
+    }
+
+    private String outputFeed(SyndFeed f) {
+        String s = null;
+        try {
+            s = new SyndFeedOutput().outputString(f);
+        } catch (FeedException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }

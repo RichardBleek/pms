@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import personal.music.stream.pms.feed.Channel;
 import personal.music.stream.pms.feed.FeedService;
 import personal.music.stream.pms.mix.FileService;
 import personal.music.stream.pms.mix.Mix;
@@ -34,8 +34,8 @@ public class PmsApplication {
                                 fileService.streamFile(request.pathVariable("fileName")), Resource.class
                         ))
                 .andRoute(RequestPredicates.GET("/jaydee/rss"),
-                        request -> ServerResponse.ok().body(
-                               feedService.rss(), Channel.class
+                        request -> ServerResponse.ok().contentType(MediaType.APPLICATION_RSS_XML).body(
+                               feedService.syndFeedString(), String.class
                         ));
     }
 
