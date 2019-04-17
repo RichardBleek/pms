@@ -33,7 +33,7 @@ public class PmsApplication {
                         request -> ServerResponse.ok().body(
                                 fileService.streamFile(request.pathVariable("fileName")), Resource.class
                         ))
-                .andRoute(RequestPredicates.GET("/jaydee/rss"),
+                .andRoute(RequestPredicates.GET("/jaydee/rss").or(RequestPredicates.GET("/jaydee/rss.rss")),
                         request -> ServerResponse.ok().contentType(MediaType.APPLICATION_RSS_XML).body(
                                feedService.syndFeedString(), String.class
                         ));
