@@ -29,11 +29,18 @@ public class FeedService {
         feed.setDescription("Stream you personal music");
         feed.setLink("http://rbleek.com/jaydee/rss");
 
+        SyndLink link = new SyndLinkImpl();
+        link.setRel("self");
+        link.setHref("http://rbleek.com/jaydee/rss");
+        link.setTitle("Personal Music Stream - Jaydee music");
+        feed.setLinks(Collections.singletonList(link));
+
         SyndImageImpl image = new SyndImageImpl();
         image.setUrl("http://rbleek.com/jaydee/file/channel-image.jpg");
-        image.setTitle("Personal music stream");
-        image.setHeight(288);
-        image.setWidth(288);
+        image.setTitle("Personal Music Stream - Jaydee music");
+        image.setLink("http://rbleek.com/jaydee/file/channel-image.jpg");
+        image.setHeight(144);
+        image.setWidth(144);
         feed.setImage(image);
 
         List<SyndEntry> entries = new ArrayList<>();
