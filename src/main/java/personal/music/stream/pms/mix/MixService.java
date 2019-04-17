@@ -3,17 +3,18 @@ package personal.music.stream.pms.mix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class MixService {
@@ -23,7 +24,7 @@ public class MixService {
     @Value("${pms.files-folder}")
     String filesFolder;
 
-    ResourceLoader resourceLoader;
+    private ResourceLoader resourceLoader;
 
     private Map<String, Mix> repo = new HashMap<>();
 
@@ -31,13 +32,16 @@ public class MixService {
         this.resourceLoader = resourceLoader;
     }
 
-    private void fillRepo() {
-        Resource resource = resourceLoader.getResource("file:" + filesFolder + "mixes.txt");
+    public void fillRepo() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(resource.getFile()));
-            reader.lines().forEach(s -> repo.put(
-                    s, new Mix(s, s, "http://rbleek.com/jaydee/file/"+s+".jpg",
-                            "http://rbleek.com/jaydee/file/"+s+".m4a")));
+            Stream<Path> walk = Files.walk(Paths.get(filesFolder));
+            walk.map(Path::toString)
+                    .filter(f -> f.endsWith(".m4a"))
+                    .map(s -> s.replaceFirst(filesFolder, ""))
+                    .map(s -> s.replaceFirst(".m4a", ""))
+                    .forEach(s -> repo.put(
+                            s, new Mix(s, s, "http://rbleek.com/jaydee/file/"+s+".jpg",
+                                    "http://rbleek.com/jaydee/file/"+s+".m4a")));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
