@@ -38,7 +38,7 @@ public class FeedService {
         SyndImageImpl image = new SyndImageImpl();
         image.setUrl("http://rbleek.com/jaydee/file/channel-image.jpg");
         image.setTitle("Personal Music Stream - Jaydee music");
-        image.setLink("http://rbleek.com/jaydee/file/channel-image.jpg");
+        image.setLink("http://rbleek.com/jaydee/rss");
         image.setHeight(144);
         image.setWidth(144);
         feed.setImage(image);
