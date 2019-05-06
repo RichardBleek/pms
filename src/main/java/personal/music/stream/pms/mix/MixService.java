@@ -2,8 +2,6 @@ package personal.music.stream.pms.mix;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,16 +19,17 @@ public class MixService {
 
     private Logger log = LoggerFactory.getLogger(MixService.class);
 
-    @Value("${pms.files-folder}")
     String filesFolder;
+    String hostName;
+    String applicationPath;
 
-    private ResourceLoader resourceLoader;
+    MixService(String filesFolder, String hostName, String applicationPath) {
+        this.filesFolder = filesFolder;
+        this.hostName = hostName;
+        this.applicationPath = applicationPath;
+    }
 
     private Map<String, Mix> repo = new HashMap<>();
-
-    MixService(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
 
     public void fillRepo() {
         try {
@@ -40,8 +39,8 @@ public class MixService {
                     .map(s -> s.replaceFirst(filesFolder, ""))
                     .map(s -> s.replaceFirst(".m4a", ""))
                     .forEach(s -> repo.put(
-                            s, new Mix(s, s, "http://rbleek.com/jaydee/file/"+s+".jpg",
-                                    "http://rbleek.com/jaydee/file/"+s+".m4a")));
+                            s, new Mix(s, s, hostName+applicationPath+"/file/"+s+".jpg",
+                                    hostName+applicationPath+"/file/"+s+".m4a")));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
