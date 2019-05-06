@@ -19,9 +19,9 @@ public class MixService {
 
     private Logger log = LoggerFactory.getLogger(MixService.class);
 
-    String filesFolder;
-    String hostName;
-    String applicationPath;
+    private String filesFolder;
+    private String hostName;
+    private String applicationPath;
 
     MixService(String filesFolder, String hostName, String applicationPath) {
         this.filesFolder = filesFolder;
