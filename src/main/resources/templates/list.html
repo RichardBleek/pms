@@ -1,0 +1,17 @@
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-7" />
+    <title>Personal Music Stream</title>
+</head>
+<body>
+<div id="list_music">
+    <ul>
+        <li th:each="mix: ${mixes}">
+            <a th:href="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/player/} + ${mix.id}">
+                <p th:text="${mix.name}" />
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

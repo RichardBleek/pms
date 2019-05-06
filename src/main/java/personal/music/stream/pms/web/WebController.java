@@ -4,19 +4,33 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import personal.music.stream.pms.mix.Mix;
+import personal.music.stream.pms.mix.MixService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class WebController {
 
+	private MixService mixService;
+
+	WebController(MixService mixService) {
+		this.mixService = mixService;
+	}
+
 	@GetMapping("${pms.applicationPath}/player")
-	public String player() {
-		return "index";
+	public String player(Model model) {
+		List<Mix> mixes = new ArrayList<>();
+		mixService.mixStream().subscribe(mixes::add);
+	    model.addAttribute("mixes", mixes);
+		return "list";
 	}
 
 	@GetMapping("${pms.applicationPath}/player/{mix_id}")
 	public String player(@PathVariable String mix_id, Model model) {
 		model.addAttribute("mix_id", mix_id);
-		return "index";
+		return "player";
 	}
 
 }

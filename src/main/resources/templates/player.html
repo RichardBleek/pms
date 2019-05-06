@@ -1,0 +1,17 @@
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-7" />
+<title>Personal Music Stream</title>
+</head>
+<body>
+	<div>
+		<div id="play_music">
+			<button onclick="audio.play();">Play</button>
+			<button onclick="audio.pause();">Pause</button>
+			<br>
+			<img th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix_id} + @{.jpg}" />
+			<audio th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix_id} + @{.m4a}" id="audio"></audio>
+		</div>
+	</div>
+</body>
+</html>

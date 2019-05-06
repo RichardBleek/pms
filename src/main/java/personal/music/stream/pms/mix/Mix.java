@@ -1,7 +1,5 @@
 package personal.music.stream.pms.mix;
 
-import java.util.List;
-
 public class Mix {
 
     String id;
