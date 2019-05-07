@@ -16,10 +16,12 @@ import reactor.core.publisher.Mono;
 @Service
 public class FeedService {
 
+    private String baseUrl;
     private MixService mixService;
 
-    public FeedService(MixService mixService) {
+    public FeedService(MixService mixService, String hostName, String applicationPath) {
         this.mixService = mixService;
+        this.baseUrl = hostName + applicationPath;
     }
 
     public Mono<SyndFeed> syndFeed() {
@@ -27,18 +29,18 @@ public class FeedService {
         feed.setFeedType("rss_2.0");
         feed.setTitle("Personal Music Stream - Jaydee music");
         feed.setDescription("Stream you personal music");
-        feed.setLink("http://rbleek.com/jaydee/rss");
+        feed.setLink(baseUrl + "/rss");
 
         SyndLink link = new SyndLinkImpl();
         link.setRel("self");
-        link.setHref("http://rbleek.com/jaydee/rss");
+        link.setHref(baseUrl + "/rss");
         link.setTitle("Personal Music Stream - Jaydee music");
         feed.setLinks(Collections.singletonList(link));
 
         SyndImageImpl image = new SyndImageImpl();
-        image.setUrl("http://rbleek.com/jaydee/file/channel-image.jpg");
+        image.setUrl(baseUrl + "/file/channel-image.jpg");
         image.setTitle("Personal Music Stream - Jaydee music");
-        image.setLink("http://rbleek.com/jaydee/rss");
+        image.setLink(baseUrl + "/rss");
         image.setHeight(144);
         image.setWidth(144);
         feed.setImage(image);
@@ -59,7 +61,6 @@ public class FeedService {
         category.setName("music");
         entry.setCategories(Collections.singletonList(category));
         return entry;
-
     }
 
     public Mono<String> syndFeedString() {

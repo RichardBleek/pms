@@ -20,13 +20,11 @@ public class MixService {
     private Logger log = LoggerFactory.getLogger(MixService.class);
 
     private String filesFolder;
-    private String hostName;
-    private String applicationPath;
+    private String baseUrl;
 
     MixService(String filesFolder, String hostName, String applicationPath) {
         this.filesFolder = filesFolder;
-        this.hostName = hostName;
-        this.applicationPath = applicationPath;
+        this.baseUrl = hostName + applicationPath;
     }
 
     private Map<String, Mix> repo = new HashMap<>();
@@ -34,13 +32,9 @@ public class MixService {
     public void fillRepo() {
         try {
             Stream<Path> walk = Files.walk(Paths.get(filesFolder));
-            walk.map(Path::toString)
-                    .filter(f -> f.endsWith(".m4a"))
-                    .map(s -> s.replaceFirst(filesFolder, ""))
-                    .map(s -> s.replaceFirst(".m4a", ""))
-                    .forEach(s -> repo.put(
-                            s, new Mix(s, s, hostName+applicationPath+"/file/"+s+".jpg",
-                                    hostName+applicationPath+"/file/"+s+".m4a")));
+            walk.map(Path::toString).filter(f -> f.endsWith(".m4a")).map(s -> s.replaceFirst(filesFolder, ""))
+                    .map(s -> s.replaceFirst(".m4a", "")).forEach(s -> repo.put(s,
+                            new Mix(s, s, baseUrl + "/file/" + s + ".jpg", baseUrl + "/file/" + s + ".m4a")));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
