@@ -23,7 +23,7 @@ public class FeedServiceTest {
 
     @Before
     public void before() {
-        feedService = new FeedService(mixService);
+        feedService = new FeedService(mixService, "http://localhost:8080", "pms");
 
         Mockito.when(mixService.mixStream()).thenReturn(Flux.just(
                 new Mix("semblance", "Semblance", "http://a.com/b.jpg", "http://a.com/b.m4a"),
