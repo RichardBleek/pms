@@ -1,17 +1,21 @@
 package personal.music.stream.pms.mix;
 
+import java.util.Date;
+
 public class Mix {
 
-    String id;
-    String name;
-    String imageUrl;
-    String fullUrl;
+    private String id;
+    private String name;
+    private String imageUrl;
+    private String fullUrl;
+    private Date publishedDate;
 
-    public Mix(String id, String name, String imageUrl, String fullUrl) {
+    public Mix(String id, String name, String imageUrl, String fullUrl, Date publishedDate) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
         this.fullUrl = fullUrl;
+        this.publishedDate = publishedDate;
     }
 
     public String getId() {
@@ -44,5 +48,13 @@ public class Mix {
 
     public void setFullUrl(String fullUrl) {
         this.fullUrl = fullUrl;
+    }
+
+    public Date getPublishedDate() {
+        return publishedDate;
+    }
+
+    public void setPublishedDate(Date publishedDate) {
+        this.publishedDate = publishedDate;
     }
 }

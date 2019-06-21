@@ -2,6 +2,7 @@ package personal.music.stream.pms.feed;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.rometools.rome.feed.synd.*;
@@ -57,6 +58,7 @@ public class FeedService {
         entry.setLink(mix.getFullUrl());
         entry.setTitle(mix.getName());
         entry.setUri(mix.getFullUrl());
+        entry.setPublishedDate(new Date());
         SyndCategory category = new SyndCategoryImpl();
         category.setName("music");
         entry.setCategories(Collections.singletonList(category));

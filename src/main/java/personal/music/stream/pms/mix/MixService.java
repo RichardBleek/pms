@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -29,15 +30,24 @@ public class MixService {
 
     private Map<String, Mix> repo = new HashMap<>();
 
-    public void fillRepo() {
+    void fillRepo() {
         try {
             Stream<Path> walk = Files.walk(Paths.get(filesFolder));
-            walk.map(Path::toString).filter(f -> f.endsWith(".m4a")).map(s -> s.replaceFirst(filesFolder, ""))
-                    .map(s -> s.replaceFirst(".m4a", "")).forEach(s -> repo.put(s,
-                            new Mix(s, s, baseUrl + "/file/" + s + ".jpg", baseUrl + "/file/" + s + ".m4a")));
+            walk.filter(path -> path.toString().endsWith(".m4a"))
+                    .map(this::mixFromPath)
+                    .forEach(mix -> repo.put(mix.getId(), mix));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private Mix mixFromPath(Path path) {
+        String name = path.toString().replace(".m4a", "");
+        Date publishDate = new Date();
+        return new Mix(name, name,
+                baseUrl + "/file/" + name + ".jpg",
+                baseUrl + "/file/" + name + ".m4a",
+                publishDate);
     }
 
     public Flux<Mix> mixStream() {
