@@ -13,6 +13,8 @@ import personal.music.stream.pms.mix.MixService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
+
 @RunWith(SpringRunner.class)
 public class FeedServiceTest {
 
@@ -26,8 +28,8 @@ public class FeedServiceTest {
         feedService = new FeedService(mixService, "http://localhost:8080", "pms");
 
         Mockito.when(mixService.mixStream()).thenReturn(Flux.just(
-                new Mix("semblance", "Semblance", "http://a.com/b.jpg", "http://a.com/b.m4a"),
-                new Mix("slipstream", "Slipstream", "http://a.com/c.jpg", "http://a.com/c.m4a")
+                new Mix("semblance", "Semblance", "http://a.com/b.jpg", "http://a.com/b.m4a", new Date()),
+                new Mix("slipstream", "Slipstream", "http://a.com/c.jpg", "http://a.com/c.m4a", new Date())
         ));
     }
 
