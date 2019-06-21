@@ -3,15 +3,16 @@
     <meta charset="UTF-7" />
     <title>Personal Music Stream</title>
 </head>
-<body>
+<body style="background-color: slategrey">
 <div id="list_music">
-    <ul>
-        <li th:each="mix: ${mixes}">
-            <a th:href="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/player/} + ${mix.id}">
+    <div th:each="mix: ${mixes}" style="float: left; padding: 3px; margin: 3px; border: darkslategray 3px solid">
+        <a th:href="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/player/} + ${mix.id}">
+            <div>
+                <img th:src="${mix.imageUrl}" style="height: 400px; width: 711px" />
                 <p th:text="${mix.name}" />
-            </a>
-        </li>
-    </ul>
+            </div>
+        </a>
+    </div>
 </div>
 </body>
 </html>
