@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,12 +43,17 @@ public class MixService {
     }
 
     private Mix mixFromPath(Path path) {
-        String name = path.toString().replace(".m4a", "");
-        Date publishDate = new Date();
-        return new Mix(name, name,
+        try {
+            String name = path.toString().replace(".m4a", "").replaceFirst(filesFolder, "");
+            long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
+            Date publishDate = new Date(publishMillis);
+            return new Mix(name, name,
                 baseUrl + "/file/" + name + ".jpg",
                 baseUrl + "/file/" + name + ".m4a",
                 publishDate);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Flux<Mix> mixStream() {

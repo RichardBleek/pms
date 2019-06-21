@@ -58,7 +58,7 @@ public class FeedService {
         entry.setLink(mix.getFullUrl());
         entry.setTitle(mix.getName());
         entry.setUri(mix.getFullUrl());
-        entry.setPublishedDate(new Date());
+        entry.setPublishedDate(mix.getPublishedDate());
         SyndCategory category = new SyndCategoryImpl();
         category.setName("music");
         entry.setCategories(Collections.singletonList(category));
