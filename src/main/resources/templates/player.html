@@ -8,9 +8,13 @@
 			box-sizing: border-box;
 		}
 		body {
-			background: linear-gradient(to left, #7700aa, #8800ff);
 			text-align:center;
 			color:#fff;
+
+			height: 100%;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
 		}
 		h3{
 			text-shadow:1px 1px 1px #fff;
@@ -30,8 +34,8 @@
 		}
 	</style>
 </head>
-<body>
-	<h2 th:text="${mix.name}"/>
+<body th:style="'background-image: url(' + ${mix.imageUrl} + ');'">
+	<h2 th:text="${mix.name}"></h2>
 	<div class="container-audio">
 		<audio controls autoplay th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix.id} + @{.m4a}" id="audio"></audio>
 	</div>
