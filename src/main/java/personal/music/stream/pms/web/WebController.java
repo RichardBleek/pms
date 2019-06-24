@@ -29,7 +29,7 @@ public class WebController {
 
 	@GetMapping("${pms.applicationPath}/player/{mix_id}")
 	public String player(@PathVariable String mix_id, Model model) {
-		model.addAttribute("mix_id", mix_id);
+	    model.addAttribute("mix", mixService.mixMono(mix_id));
 		return "player";
 	}
 

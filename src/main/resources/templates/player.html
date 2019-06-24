@@ -1,17 +1,39 @@
 <html xmlns:th="http://thymeleaf.org">
 <head>
-<meta charset="UTF-7" />
-<title>Personal Music Stream</title>
+	<title>Personal Music Stream</title>
+	<link href='https://fonts.googleapis.com/css?family=Allerta' rel='stylesheet'>
+    <style>
+		* {
+			font-family: 'Allerta', arial, Tahoma, serif;
+			box-sizing: border-box;
+		}
+		body {
+			background: linear-gradient(to left, #7700aa, #8800ff);
+			text-align:center;
+			color:#fff;
+		}
+		h3{
+			text-shadow:1px 1px 1px #fff;
+		}
+		.container-audio {
+			width: 66%;
+			height: auto;
+			color: #444;
+			margin: 20px auto;
+			overflow: hidden;
+		}
+		audio {
+			width:100%;
+		}
+		audio:nth-child(2), audio:nth-child(4), audio:nth-child(6) {
+			margin: 0;
+		}
+	</style>
 </head>
 <body>
-	<div>
-		<div id="play_music">
-			<button onclick="audio.play();">Play</button>
-			<button onclick="audio.pause();">Pause</button>
-			<br>
-			<img th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix_id} + @{.jpg}" />
-			<audio th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix_id} + @{.m4a}" id="audio"></audio>
-		</div>
+	<h2 th:text="${mix.name}"/>
+	<div class="container-audio">
+		<audio controls autoplay th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix.id} + @{.m4a}" id="audio"></audio>
 	</div>
 </body>
 </html>
