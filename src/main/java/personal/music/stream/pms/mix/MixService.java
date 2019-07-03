@@ -38,7 +38,8 @@ public class MixService {
                     .map(this::mixFromPath)
                     .forEach(mix -> repo.put(mix.getId(), mix));
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("{}: {}", e.getClass().toString(), e.getMessage());
+            log.error("Is the correct files folder configured? Check pms.filesFolder setting.");
         }
     }
 
