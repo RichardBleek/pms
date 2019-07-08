@@ -1,4 +1,4 @@
-package personal.music.stream.pms.feed;
+package personal.music.stream.pms.service;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 import org.junit.Assert;
@@ -9,7 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 import personal.music.stream.pms.mix.Mix;
-import personal.music.stream.pms.mix.MixService;
+import personal.music.stream.pms.service.FeedService;
+import personal.music.stream.pms.service.MixService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

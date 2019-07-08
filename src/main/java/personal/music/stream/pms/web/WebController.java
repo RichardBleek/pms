@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import personal.music.stream.pms.mix.Mix;
-import personal.music.stream.pms.mix.MixService;
+import personal.music.stream.pms.service.MixService;
 
 import java.util.ArrayList;
 import java.util.List;

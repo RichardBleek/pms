@@ -1,8 +1,7 @@
-package personal.music.stream.pms.feed;
+package personal.music.stream.pms.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import com.rometools.rome.feed.synd.*;
@@ -11,7 +10,6 @@ import com.rometools.rome.io.SyndFeedOutput;
 import org.springframework.stereotype.Service;
 
 import personal.music.stream.pms.mix.Mix;
-import personal.music.stream.pms.mix.MixService;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -46,9 +44,10 @@ public class FeedService {
         image.setWidth(144);
         feed.setImage(image);
 
-        List<SyndEntry> entries = new ArrayList<>();
-        mixService.mixStream().map(this::toEntry).subscribe(entries::add);
-        feed.setEntries(entries);
+        mixService.mixStream()
+                .map(this::toEntry)
+                .collectList()
+                .subscribe(feed::setEntries);
 
         return Mono.just(feed);
     }

@@ -1,4 +1,4 @@
-package personal.music.stream.pms.mix;
+package personal.music.stream.pms.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

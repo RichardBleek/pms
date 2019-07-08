@@ -9,10 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import personal.music.stream.pms.feed.FeedService;
-import personal.music.stream.pms.mix.FileService;
+import personal.music.stream.pms.service.FeedService;
+import personal.music.stream.pms.service.FileService;
 import personal.music.stream.pms.mix.Mix;
-import personal.music.stream.pms.mix.MixService;
+import personal.music.stream.pms.service.MixService;
 
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
