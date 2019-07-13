@@ -2,16 +2,39 @@
 <head>
     <meta charset="UTF-7" />
     <title>Personal Music Stream</title>
+    <link href='https://fonts.googleapis.com/css?family=Allerta' rel='stylesheet'>
+    <style>
+        * {
+            font-family: 'Allerta', arial, Tahoma, serif;
+        }
+        body {
+            background-image: linear-gradient(darkmagenta, darkmagenta, darkorange);
+            margin: 3px;
+        }
+        .mix {
+            float: left;
+            padding: 3px;
+        }
+        .mix_img {
+            height: 300px;
+            width: 533px;
+            border-radius: 12px;
+        }
+        .mix_text {
+            color: white;
+            position: relative;
+            bottom: 50px;
+            left: 15px;
+        }
+    </style>
 </head>
-<body style="background-color: slategrey">
+<body>
 <div id="list_music">
-    <div th:each="mix: ${mixes}" style="float: left; padding: 3px; margin: 3px; border: darkslategray 3px solid">
+    <div class="mix" th:each="mix: ${mixes}">
         <a th:href="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/player/} + ${mix.id}">
-            <div>
-                <img th:src="${mix.imageUrl}" style="height: 400px; width: 711px" />
-                <p th:text="${mix.name}" />
-            </div>
+            <img class="mix_img" th:src="${mix.imageUrl}" />
         </a>
+        <p class="mix_text" th:text="${mix.name}"/>
     </div>
 </div>
 </body>
