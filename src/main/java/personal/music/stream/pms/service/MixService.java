@@ -53,7 +53,7 @@ public class MixService {
             long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
             Date publishDate = new Date(publishMillis);
             return new Mix(name, name,
-                baseUrl + "/file/" + urlEncode(name) + ".jpg",
+                baseUrl + "/file/" + urlEncode(name) + determineImageFormat(name),
                 baseUrl + "/file/" + urlEncode(name) + ".m4a",
                 publishDate);
         } catch (IOException e) {
@@ -69,6 +69,20 @@ public class MixService {
     public Mono<Mix> mixMono(String id) {
         refreshRepo();
         return Mono.just(repo.get(id));
+    }
+
+    private String determineImageFormat(String name) {
+        try {
+            if(Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + ".jpg"))) {
+                return ".jpg";
+            }
+            if(Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + ".png"))) {
+                return ".png";
+            }
+            return ".jpg";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     String urlEncode(String s) {
