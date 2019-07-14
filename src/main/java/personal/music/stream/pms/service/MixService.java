@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,8 +53,8 @@ public class MixService {
             long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
             Date publishDate = new Date(publishMillis);
             return new Mix(name, name,
-                baseUrl + "/file/" + name + ".jpg",
-                baseUrl + "/file/" + name + ".m4a",
+                baseUrl + "/file/" + URLEncoder.encode(name, StandardCharsets.UTF_8) + ".jpg",
+                baseUrl + "/file/" + URLEncoder.encode(name, StandardCharsets.UTF_8) + ".m4a",
                 publishDate);
         } catch (IOException e) {
             throw new RuntimeException(e);
