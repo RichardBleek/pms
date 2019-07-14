@@ -53,8 +53,8 @@ public class MixService {
             long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
             Date publishDate = new Date(publishMillis);
             return new Mix(name, name,
-                baseUrl + "/file/" + URLEncoder.encode(name, StandardCharsets.UTF_8) + ".jpg",
-                baseUrl + "/file/" + URLEncoder.encode(name, StandardCharsets.UTF_8) + ".m4a",
+                baseUrl + "/file/" + urlEncode(name) + ".jpg",
+                baseUrl + "/file/" + urlEncode(name) + ".m4a",
                 publishDate);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -69,5 +69,9 @@ public class MixService {
     public Mono<Mix> mixMono(String id) {
         refreshRepo();
         return Mono.just(repo.get(id));
+    }
+
+    String urlEncode(String s) {
+        return URLEncoder.encode(s, StandardCharsets.UTF_8).replace("+", "%20");
     }
 }
