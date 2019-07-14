@@ -24,15 +24,16 @@ public class MixService {
 
     private String filesFolder;
     private String baseUrl;
+    private Map<String, Mix> repo = new HashMap<>();
 
     MixService(String filesFolder, String hostName, String applicationPath) {
         this.filesFolder = filesFolder;
         this.baseUrl = hostName + applicationPath;
     }
 
-    private Map<String, Mix> repo = new HashMap<>();
 
-    void fillRepo() {
+    void refreshRepo() {
+        repo.clear();
         try {
             Stream<Path> walk = Files.walk(Paths.get(filesFolder));
             walk.filter(path -> path.toString().endsWith(".m4a"))
@@ -59,12 +60,12 @@ public class MixService {
     }
 
     public Flux<Mix> mixStream() {
-        fillRepo();
+        refreshRepo();
         return Flux.fromStream(repo.values().stream());
     }
 
     public Mono<Mix> mixMono(String id) {
-        fillRepo();
+        refreshRepo();
         return Mono.just(repo.get(id));
     }
 }
