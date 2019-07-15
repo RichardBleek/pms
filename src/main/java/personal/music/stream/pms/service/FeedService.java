@@ -1,12 +1,14 @@
 package personal.music.stream.pms.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+import com.rometools.modules.itunes.EntryInformation;
+import com.rometools.modules.itunes.EntryInformationImpl;
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import personal.music.stream.pms.mix.Mix;
@@ -14,6 +16,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class FeedService {
+
+    private Logger log = LoggerFactory.getLogger(FeedService.class);
 
     private String baseUrl;
     private MixService mixService;
@@ -61,6 +65,11 @@ public class FeedService {
         SyndCategory category = new SyndCategoryImpl();
         category.setName("music");
         entry.setCategories(Collections.singletonList(category));
+
+        EntryInformation entryInformation = new EntryInformationImpl();
+        entryInformation.setTitle(mix.getName());
+        entry.getModules().add(entryInformation);
+
         return entry;
     }
 
