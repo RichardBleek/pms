@@ -1,9 +1,14 @@
 package personal.music.stream.pms.service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import com.rometools.modules.itunes.EntryInformation;
 import com.rometools.modules.itunes.EntryInformationImpl;
+import com.rometools.rome.feed.rss.Enclosure;
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedOutput;
@@ -59,7 +64,11 @@ public class FeedService {
 
     private SyndEntry toEntry(Mix mix) {
         SyndEntry entry = new SyndEntryImpl();
-        entry.setLink(mix.getFullUrl());
+
+        SyndEnclosure enclosure = new SyndEnclosureImpl();
+        enclosure.setUrl(mix.getFullUrl());
+        enclosure.setType("audio/m4a");
+        entry.setEnclosures(Collections.singletonList(enclosure));
         entry.setTitle(mix.getName());
         entry.setUri(mix.getFullUrl());
         entry.setPublishedDate(mix.getPublishedDate());
@@ -71,6 +80,11 @@ public class FeedService {
         EntryInformation entryInformation = new EntryInformationImpl();
         entryInformation.setTitle(mix.getName());
         entryInformation.setAuthor("Jaydee");
+        try {
+            entryInformation.setImage(new URL(mix.getImageUrl()));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
         entry.getModules().add(entryInformation);
 
         return entry;
