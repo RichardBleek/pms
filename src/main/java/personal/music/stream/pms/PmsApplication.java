@@ -39,6 +39,11 @@ public class PmsApplication {
     }
 
     @Bean
+    String pmsAuthor(Environment environment) {
+	    return environment.getProperty("pms.author");
+    }
+
+    @Bean
     RouterFunction<?> routes(MixService mixService, FileService fileService, FeedService feedService, String applicationPath){
         return route(RequestPredicates.GET(applicationPath+"/mixes"),
                 request -> ServerResponse.ok().body(mixService.mixStream(), Mix.class))
