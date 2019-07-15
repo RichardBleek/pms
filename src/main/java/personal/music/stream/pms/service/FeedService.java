@@ -32,6 +32,7 @@ public class FeedService {
         feed.setFeedType("rss_2.0");
         feed.setTitle("Personal Music Stream - Jaydee music");
         feed.setDescription("Stream you personal music");
+        feed.setAuthor("Jaydee");
         feed.setLink(baseUrl + "/rss");
 
         SyndLink link = new SyndLinkImpl();
