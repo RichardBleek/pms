@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,15 +26,16 @@ public class MixService {
 
     private String filesFolder;
     private String baseUrl;
+    private Map<String, Mix> repo = new HashMap<>();
 
     MixService(String filesFolder, String hostName, String applicationPath) {
         this.filesFolder = filesFolder;
         this.baseUrl = hostName + applicationPath;
     }
 
-    private Map<String, Mix> repo = new HashMap<>();
 
-    void fillRepo() {
+    void refreshRepo() {
+        repo.clear();
         try {
             Stream<Path> walk = Files.walk(Paths.get(filesFolder));
             walk.filter(path -> path.toString().endsWith(".m4a"))
@@ -50,8 +53,8 @@ public class MixService {
             long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
             Date publishDate = new Date(publishMillis);
             return new Mix(name, name,
-                baseUrl + "/file/" + name + ".jpg",
-                baseUrl + "/file/" + name + ".m4a",
+                baseUrl + "/file/" + urlEncode(name) + determineImageFormat(name),
+                baseUrl + "/file/" + urlEncode(name) + ".m4a",
                 publishDate);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -59,12 +62,30 @@ public class MixService {
     }
 
     public Flux<Mix> mixStream() {
-        fillRepo();
+        refreshRepo();
         return Flux.fromStream(repo.values().stream());
     }
 
     public Mono<Mix> mixMono(String id) {
-        fillRepo();
+        refreshRepo();
         return Mono.just(repo.get(id));
+    }
+
+    private String determineImageFormat(String name) {
+        try {
+            if(Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + ".jpg"))) {
+                return ".jpg";
+            }
+            if(Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + ".png"))) {
+                return ".png";
+            }
+            return ".jpg";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    String urlEncode(String s) {
+        return URLEncoder.encode(s, StandardCharsets.UTF_8).replace("+", "%20");
     }
 }
