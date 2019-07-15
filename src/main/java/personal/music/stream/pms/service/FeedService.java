@@ -63,12 +63,14 @@ public class FeedService {
         entry.setTitle(mix.getName());
         entry.setUri(mix.getFullUrl());
         entry.setPublishedDate(mix.getPublishedDate());
+        entry.setAuthor("Jaydee");
         SyndCategory category = new SyndCategoryImpl();
         category.setName("music");
         entry.setCategories(Collections.singletonList(category));
 
         EntryInformation entryInformation = new EntryInformationImpl();
         entryInformation.setTitle(mix.getName());
+        entryInformation.setAuthor("Jaydee");
         entry.getModules().add(entryInformation);
 
         return entry;
