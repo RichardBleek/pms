@@ -29,8 +29,8 @@ public class FeedServiceTest {
         feedService = new FeedService(mixService, "http://localhost:8080", "pms");
 
         Mockito.when(mixService.mixStream()).thenReturn(Flux.just(
-                new Mix("semblance", "Semblance", "http://a.com/b.jpg", "http://a.com/b.m4a", new Date()),
-                new Mix("slipstream", "Slipstream", "http://a.com/c.jpg", "http://a.com/c.m4a", new Date())
+                new Mix("semblance", "Semblance", "j", "http://a.com/b.jpg", "http://a.com/b.m4a", new Date()),
+                new Mix("slipstream", "Slipstream", "j","http://a.com/c.jpg", "http://a.com/c.m4a", new Date())
         ));
     }
 

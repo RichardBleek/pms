@@ -33,19 +33,30 @@ public class FeedService {
     }
 
     public Mono<SyndFeed> syndFeed() {
+        //feed object
         SyndFeed feed = new SyndFeedImpl();
+
+        //create entries
+        mixService.mixStream()
+                .map(this::toEntry)
+                .collectList()
+                .subscribe(feed::setEntries);
+
+        //feed info
         feed.setFeedType("rss_2.0");
         feed.setTitle("Personal Music Stream - Jaydee music");
         feed.setDescription("Stream you personal music");
-        feed.setAuthor("Jaydee");
+        feed.getEntries().stream().findFirst().ifPresent(syndEntry -> feed.setAuthor(syndEntry.getAuthor()));
         feed.setLink(baseUrl + "/rss");
 
+        //feed link info
         SyndLink link = new SyndLinkImpl();
         link.setRel("self");
         link.setHref(baseUrl + "/rss");
         link.setTitle("Personal Music Stream - Jaydee music");
         feed.setLinks(Collections.singletonList(link));
 
+        //feed image
         SyndImageImpl image = new SyndImageImpl();
         image.setUrl(baseUrl + "/file/channel-image.jpg");
         image.setTitle("Personal Music Stream - Jaydee music");
@@ -53,11 +64,6 @@ public class FeedService {
         image.setHeight(144);
         image.setWidth(144);
         feed.setImage(image);
-
-        mixService.mixStream()
-                .map(this::toEntry)
-                .collectList()
-                .subscribe(feed::setEntries);
 
         return Mono.just(feed);
     }
@@ -72,14 +78,14 @@ public class FeedService {
         entry.setTitle(mix.getName());
         entry.setUri(mix.getFullUrl());
         entry.setPublishedDate(mix.getPublishedDate());
-        entry.setAuthor("Jaydee");
+        entry.setAuthor(mix.getAuthor());
         SyndCategory category = new SyndCategoryImpl();
         category.setName("music");
         entry.setCategories(Collections.singletonList(category));
 
         EntryInformation entryInformation = new EntryInformationImpl();
         entryInformation.setTitle(mix.getName());
-        entryInformation.setAuthor("Jaydee");
+        entryInformation.setAuthor(mix.getAuthor());
         try {
             entryInformation.setImage(new URL(mix.getImageUrl()));
         } catch (MalformedURLException e) {

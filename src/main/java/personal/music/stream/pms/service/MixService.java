@@ -14,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,10 +54,10 @@ public class MixService {
             String name = path.toString().replace(".m4a", "").replaceFirst(filesFolder, "");
             long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
             Date publishDate = new Date(publishMillis);
-            return new Mix(name, name,
+            String owner = Files.getFileAttributeView(path, FileOwnerAttributeView.class).getOwner().getName();
+            return new Mix(name, name, owner,
                 baseUrl + "/file/" + urlEncode(name) + determineImageFormat(name),
-                baseUrl + "/file/" + urlEncode(name) + ".m4a",
-                publishDate);
+                baseUrl + "/file/" + urlEncode(name) + ".m4a", publishDate);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

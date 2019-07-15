@@ -8,11 +8,13 @@ public class Mix {
     private String name;
     private String imageUrl;
     private String fullUrl;
+    private String author;
     private Date publishedDate;
 
-    public Mix(String id, String name, String imageUrl, String fullUrl, Date publishedDate) {
+    public Mix(String id, String name, String author, String imageUrl, String fullUrl, Date publishedDate) {
         this.id = id;
         this.name = name;
+        this.author = author;
         this.imageUrl = imageUrl;
         this.fullUrl = fullUrl;
         this.publishedDate = publishedDate;
@@ -32,6 +34,14 @@ public class Mix {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getImageUrl() {
