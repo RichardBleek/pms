@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk/openjdk11:alpine-jre
 VOLUME /tmp
 
 ARG JAR_FILE
