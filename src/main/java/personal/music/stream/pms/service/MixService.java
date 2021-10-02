@@ -14,15 +14,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 @Service
 public class MixService {
 
     private Logger log = LoggerFactory.getLogger(MixService.class);
+
+    private static List<String> imageExtensions = List.of(".jpg", ".png", ".webp");
+    private static String fallbackImageExtension = ".jpg";
 
     private String filesFolder;
     private String baseUrl;
@@ -74,17 +75,22 @@ public class MixService {
     }
 
     private String determineImageFormat(String name) {
+        return imageExtensions.stream().filter(s -> filePresent(name, s))
+                              .findFirst()
+                              .orElseGet(this::fallbackImageExtension);
+    }
+
+    private String fallbackImageExtension() {
+        return fallbackImageExtension;
+    }
+
+    private boolean filePresent(String name, String extension) {
         try {
-            if(Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + ".jpg"))) {
-                return ".jpg";
-            }
-            if(Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + ".png"))) {
-                return ".png";
-            }
-            return ".jpg";
+            return Files.walk(Paths.get(filesFolder)).anyMatch(path -> path.toString().endsWith(name + extension));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("error checking if file is present {}{}", name, extension);
         }
+        return false;
     }
 
     String urlEncode(String s) {
