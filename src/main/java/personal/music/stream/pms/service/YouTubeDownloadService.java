@@ -10,7 +10,6 @@ import personal.music.stream.pms.config.YouTubePlaylistConfiguration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,22 +17,15 @@ import java.util.concurrent.TimeUnit;
 public class YouTubeDownloadService {
 
     private static final int TIMEOUT = 15;
-    private List<String> defaultOptions = List.of("-k", "-x", "--audio-format", "m4a", "--write-thumbnail", "--yes-playlist", "--format", "best", "--write-info-json");
 
-    private final YouTubePlaylistConfiguration playLists;
     private final Logger log = LoggerFactory.getLogger(YouTubeDownloadService.class);
-
-    private final List<String> commands;
+    private final YouTubePlaylistConfiguration playLists;
+    private final YouTubeDownloaderConfiguration configuration;
 
     @Autowired
-    public YouTubeDownloadService(final YouTubePlaylistConfiguration playLists, final YouTubeDownloaderConfiguration configuration, final String filesFolder) {
+    public YouTubeDownloadService(final YouTubePlaylistConfiguration playLists, final YouTubeDownloaderConfiguration configuration) {
         this.playLists = playLists;
-        final String outputFolder = filesFolder + "/%(title)s.%(ext)s";
-        commands = new ArrayList<>();
-        commands.add(configuration.getExecutable());
-        commands.addAll(List.of("-o", outputFolder));
-        commands.addAll(defaultOptions);
-        commands.addAll(configuration.getExtraOptions());
+        this.configuration = configuration;
     }
 
     public void downloadPlaylists() {
@@ -42,9 +34,9 @@ public class YouTubeDownloadService {
 
     private void download(final String url) {
         try {
-            ArrayList<String> urlCommands = new ArrayList<>(commands);
-            urlCommands.add(url);
-            final ProcessBuilder builder = new ProcessBuilder(urlCommands).redirectErrorStream(true);
+            final List<String> executable = configuration.getExecutableBase();
+            executable.add(url);
+            final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
             final Process process = builder.start();
             logOutput(process);
             waitForFinish(process);
