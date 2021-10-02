@@ -8,10 +8,7 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.*;
-import org.springframework.test.context.junit4.SpringRunner;
 import personal.music.stream.pms.mix.Mix;
-import personal.music.stream.pms.service.FeedService;
-import personal.music.stream.pms.service.MixService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
