@@ -46,17 +46,18 @@ public class YouTubeDownloadService {
         }
     }
 
-    private void waitForFinish(Process process) throws InterruptedException {
+    private void waitForFinish(final Process process) throws InterruptedException {
         boolean hasProgramExitedSuccesfully = process.waitFor(TIMEOUT, TimeUnit.SECONDS);
         if (hasProgramExitedSuccesfully) {
             log.info("Playlists succesvol gedownload");
         } else {
+            process.destroy();
             log.warn("Applicatie deed er langer over dan {} seconden om af te ronden", TIMEOUT);
         }
     }
 
-    private void logOutput(Process process) throws IOException {
-        try (BufferedReader lineReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+    private void logOutput(final Process process) throws IOException {
+        try (final BufferedReader lineReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             lineReader.lines().forEach(log::debug);
         }
     }
