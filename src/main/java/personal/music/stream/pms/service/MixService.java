@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.text.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -31,7 +31,7 @@ public class MixService {
     private String baseUrl;
     private String author;
 
-    private Map<String, Mix> repo = new HashMap<>();
+    private LinkedHashMap<String, Mix> repo = new LinkedHashMap();
 
     MixService(String filesFolder, String hostName, String applicationPath, String pmsAuthor) {
         this.filesFolder = filesFolder;
@@ -46,9 +46,10 @@ public class MixService {
             Stream<Path> walk = Files.walk(Paths.get(filesFolder));
             walk.filter(path -> path.toString().endsWith(".info.json"))
                     .map(this::mixFromPath)
+                    .sorted()
                     .forEach(mix -> repo.put(mix.getId(), mix));
         } catch (IOException e) {
-            log.error("{}: {}", e.getClass().toString(), e.getMessage());
+            log.error("{}: {}", e.getClass(), e.getMessage());
             log.error("Is the correct files folder configured? Check pms.filesFolder setting.");
         }
     }
@@ -58,19 +59,19 @@ public class MixService {
             Map<?, ?> infoJson = new ObjectMapper().readValue(path.toFile(), Map.class);
             String id = (String) infoJson.get("id");
             String title = (String) infoJson.get("title");
+            String author = (String) infoJson.get("channel");
+            String uploadDateString = (String) infoJson.get("upload_date");
+            Date uploadDate = new SimpleDateFormat("yyyyMMdd").parse(uploadDateString);
+
             String baseFileName = path.toString().replace(".info.json", "").replaceFirst(filesFolder, "");
-
-            path.toString().replace(".m4a", "").replaceFirst(filesFolder, "");
-            long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
-            Date publishDate = new Date(publishMillis);
-
             String imageFile = urlEncode(baseFileName) + determineImageFormat(baseFileName);
             String audioFile = urlEncode(baseFileName) + ".m4a";
+
             return new Mix(id, title, author,
                 baseUrl + "/file/" + urlEncode(baseFileName) + determineImageFormat(baseFileName),
                 baseUrl + "/file/" + urlEncode(baseFileName) + ".m4a",
-                           imageFile, audioFile, publishDate);
-        } catch (IOException e) {
+                           imageFile, audioFile, uploadDate);
+        } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
     }

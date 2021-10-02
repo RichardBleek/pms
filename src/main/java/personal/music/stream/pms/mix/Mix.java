@@ -2,7 +2,7 @@ package personal.music.stream.pms.mix;
 
 import java.util.Date;
 
-public class Mix {
+public class Mix implements Comparable<Mix> {
 
     private String id;
     private String name;
@@ -87,5 +87,10 @@ public class Mix {
 
     public void setPublishedDate(Date publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    @Override
+    public int compareTo(Mix o) {
+        return o.getPublishedDate().compareTo(publishedDate);
     }
 }
