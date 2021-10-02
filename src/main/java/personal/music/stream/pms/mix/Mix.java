@@ -6,17 +6,22 @@ public class Mix {
 
     private String id;
     private String name;
+    private String author;
     private String imageUrl;
     private String fullUrl;
-    private String author;
+    private String imageFile;
+    private String audioFile;
     private Date publishedDate;
 
-    public Mix(String id, String name, String author, String imageUrl, String fullUrl, Date publishedDate) {
+    public Mix(String id, String name, String author, String imageUrl, String fullUrl, String imageFile, String audioFile,
+               Date publishedDate) {
         this.id = id;
         this.name = name;
         this.author = author;
         this.imageUrl = imageUrl;
         this.fullUrl = fullUrl;
+        this.imageFile = imageFile;
+        this.audioFile = audioFile;
         this.publishedDate = publishedDate;
     }
 
@@ -58,6 +63,22 @@ public class Mix {
 
     public void setFullUrl(String fullUrl) {
         this.fullUrl = fullUrl;
+    }
+
+    public String getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(String imageFile) {
+        this.imageFile = imageFile;
+    }
+
+    public String getAudioFile() {
+        return audioFile;
+    }
+
+    public void setAudioFile(String audioFile) {
+        this.audioFile = audioFile;
     }
 
     public Date getPublishedDate() {

@@ -17,6 +17,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.stream.*;
 
+import com.fasterxml.jackson.databind.*;
+
 @Service
 public class MixService {
 
@@ -42,7 +44,7 @@ public class MixService {
         repo.clear();
         try {
             Stream<Path> walk = Files.walk(Paths.get(filesFolder));
-            walk.filter(path -> path.toString().endsWith(".m4a"))
+            walk.filter(path -> path.toString().endsWith(".info.json"))
                     .map(this::mixFromPath)
                     .forEach(mix -> repo.put(mix.getId(), mix));
         } catch (IOException e) {
@@ -53,12 +55,21 @@ public class MixService {
 
     private Mix mixFromPath(Path path) {
         try {
-            String name = path.toString().replace(".m4a", "").replaceFirst(filesFolder, "");
+            Map<?, ?> infoJson = new ObjectMapper().readValue(path.toFile(), Map.class);
+            String id = (String) infoJson.get("id");
+            String title = (String) infoJson.get("title");
+            String baseFileName = path.toString().replace(".info.json", "").replaceFirst(filesFolder, "");
+
+            path.toString().replace(".m4a", "").replaceFirst(filesFolder, "");
             long publishMillis = Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
             Date publishDate = new Date(publishMillis);
-            return new Mix(name, name, author,
-                baseUrl + "/file/" + urlEncode(name) + determineImageFormat(name),
-                baseUrl + "/file/" + urlEncode(name) + ".m4a", publishDate);
+
+            String imageFile = urlEncode(baseFileName) + determineImageFormat(baseFileName);
+            String audioFile = urlEncode(baseFileName) + ".m4a";
+            return new Mix(id, title, author,
+                baseUrl + "/file/" + urlEncode(baseFileName) + determineImageFormat(baseFileName),
+                baseUrl + "/file/" + urlEncode(baseFileName) + ".m4a",
+                           imageFile, audioFile, publishDate);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
