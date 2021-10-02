@@ -1,13 +1,11 @@
 package personal.music.stream.pms.service;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class MixServiceTest {
 
@@ -21,6 +19,6 @@ public class MixServiceTest {
 
     @Test
     public void urlEncode() {
-        Assert.assertEquals("Slipstream%20Currents", mixService.urlEncode("Slipstream Currents"));
+        assertThat("Slipstream%20Currents").isEqualTo(mixService.urlEncode("Slipstream Currents"));
     }
 }

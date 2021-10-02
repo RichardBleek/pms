@@ -1,12 +1,13 @@
 package personal.music.stream.pms.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.rometools.rome.feed.synd.SyndFeed;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import personal.music.stream.pms.mix.Mix;
 import personal.music.stream.pms.service.FeedService;
@@ -16,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
-@RunWith(SpringRunner.class)
+@SpringBootTest
 public class FeedServiceTest {
 
     @Mock
@@ -24,7 +25,7 @@ public class FeedServiceTest {
 
     private FeedService feedService;
 
-    @Before
+    @BeforeEach
     public void before() {
         feedService = new FeedService(mixService, "http://localhost:8080", "pms");
 
@@ -38,15 +39,15 @@ public class FeedServiceTest {
     public void syndFeed() {
         Mono<SyndFeed> syndFeedMono = feedService.syndFeed();
         syndFeedMono.subscribe(f -> {
-            Assert.assertNotNull(f);
-            Assert.assertEquals(2, f.getEntries().size());
+            assertThat(f).isNotNull();
+            assertThat(f.getEntries().size()).isEqualTo(2);
         });
     }
 
     @Test
     public void syndFeedString() {
         Mono<String> stringOutput = feedService.syndFeedString();
-        stringOutput.subscribe(Assert::assertNotNull);
+        stringOutput.subscribe(s -> assertThat(s).isNotNull());
     }
 
 }
