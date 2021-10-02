@@ -37,7 +37,7 @@
 <body th:style="'background-image: url(' + ${mix.imageUrl} + ');'">
 	<h2 th:text="${mix.name}"></h2>
 	<div class="container-audio">
-		<audio controls autoplay th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix.id} + @{.m4a}" id="audio"></audio>
+		<audio controls autoplay th:src="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/file/} + ${mix.audioFile}" id="audio"></audio>
 	</div>
 </body>
 </html>

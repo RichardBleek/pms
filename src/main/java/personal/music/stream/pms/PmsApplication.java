@@ -42,22 +42,4 @@ public class PmsApplication {
     String pmsAuthor(Environment environment) {
 	    return environment.getProperty("pms.author");
     }
-
-    @Bean
-    RouterFunction<?> routes(MixService mixService, FileService fileService, FeedService feedService, String applicationPath){
-        return route(RequestPredicates.GET(applicationPath+"/mixes"),
-                request -> ServerResponse.ok().body(mixService.mixStream(), Mix.class))
-                .andRoute(RequestPredicates.GET(applicationPath+"/mixes/{id}"),
-                        request -> ServerResponse.ok().body(
-                                mixService.mixMono(request.pathVariable("id")), Mix.class))
-                .andRoute(RequestPredicates.GET(applicationPath+"/file/{fileName}"),
-                        request -> ServerResponse.ok().body(
-                                fileService.streamFile(request.pathVariable("fileName")), Resource.class
-                        ))
-                .andRoute(RequestPredicates.GET(applicationPath+"/rss"),
-                        request -> ServerResponse.ok().contentType(MediaType.APPLICATION_RSS_XML).body(
-                               feedService.syndFeedString(), String.class
-                        ));
-    }
-
 }

@@ -8,10 +8,7 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.*;
-import org.springframework.test.context.junit4.SpringRunner;
 import personal.music.stream.pms.mix.Mix;
-import personal.music.stream.pms.service.FeedService;
-import personal.music.stream.pms.service.MixService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -30,8 +27,8 @@ public class FeedServiceTest {
         feedService = new FeedService(mixService, "http://localhost:8080", "pms");
 
         Mockito.when(mixService.mixStream()).thenReturn(Flux.just(
-                new Mix("semblance", "Semblance", "j", "http://a.com/b.jpg", "http://a.com/b.m4a", new Date()),
-                new Mix("slipstream", "Slipstream", "j","http://a.com/c.jpg", "http://a.com/c.m4a", new Date())
+                new Mix("semblance", "Semblance", "j", "http://a.com/b.jpg", "http://a.com/b.m4a", "b.jpg", "b.m4a", new Date()),
+                new Mix("slipstream", "Slipstream", "j","http://a.com/c.jpg", "http://a.com/c.m4a", "c.jpg", "b.m4a", new Date())
         ));
     }
 
