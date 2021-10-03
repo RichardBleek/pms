@@ -11,12 +11,12 @@
 	</parent>
 	<groupId>personal.music.stream</groupId>
 	<artifactId>pms</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>pms</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Personal music steam</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 
 	<dependencies>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>com.rometools</groupId>
 			<artifactId>rome</artifactId>
-			<version>1.12.0</version>
+			<version>1.15.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.rometools</groupId>
