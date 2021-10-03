@@ -45,7 +45,7 @@ public class YouTubeDownloadService {
             logOutput(process);
             waitForFinish(process);
         } catch (IOException | InterruptedException e) {
-            log.error("Kan de YouTube downloader niet uitvoeren: {}", e.getMessage());
+            log.error("YouTube downloader failed: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -62,7 +62,7 @@ public class YouTubeDownloadService {
 
     private void logOutput(final Process process) throws IOException {
         try (final BufferedReader lineReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            lineReader.lines().forEach(log::debug);
+            lineReader.lines().forEach(log::info);
         }
     }
 }
