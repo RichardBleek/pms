@@ -35,11 +35,14 @@ public class YouTubeDownloaderConfiguration {
         return extraOptions;
     }
 
-    public List<String> getExecutableBase() {
+    public List<String> getExecutableBase(boolean simulate) {
         final List<String> executableBase = new ArrayList<>();
         executableBase.add(executable);
         executableBase.addAll(List.of("-o", filesFolder + "/%(title)s.%(ext)s"));
         executableBase.addAll(defaultOptions);
+        if(simulate) {
+            executableBase.add("--simulate");
+        }
         executableBase.addAll(extraOptions);
         return executableBase;
     }

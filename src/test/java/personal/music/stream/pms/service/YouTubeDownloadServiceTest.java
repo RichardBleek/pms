@@ -4,9 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("w10")
 @SpringBootTest
 class YouTubeDownloadServiceTest {
 
@@ -18,16 +16,8 @@ class YouTubeDownloadServiceTest {
     }
 
     @Test
-    void test() {
-        Assertions.assertNotNull(ytDownloadService);
-        Assertions.assertNotNull(ytDownloadService.getPlayLists());
-        Assertions.assertEquals(2, ytDownloadService.getPlayLists().size());
-        ytDownloadService.getPlayLists().forEach(System.out::println);
-    }
-
-    @Test
     void download() {
-        ytDownloadService.downloadPlaylists();
+        ytDownloadService.downloadPlaylists(true);
     }
 
 }

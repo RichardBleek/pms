@@ -29,12 +29,16 @@ public class YouTubeDownloadService {
     }
 
     public void downloadPlaylists() {
-        playLists.getUrls().forEach(this::download);
+        this.downloadPlaylists(false);
     }
 
-    private void download(final String url) {
+    public void downloadPlaylists(boolean simulate) {
+        playLists.getUrls().forEach(url -> this.download(url, simulate));
+    }
+
+    private void download(final String url, boolean simulate) {
         try {
-            final List<String> executable = configuration.getExecutableBase();
+            final List<String> executable = configuration.getExecutableBase(simulate);
             executable.add(url);
             final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
             final Process process = builder.start();
@@ -60,9 +64,5 @@ public class YouTubeDownloadService {
         try (final BufferedReader lineReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             lineReader.lines().forEach(log::debug);
         }
-    }
-
-    public List<String> getPlayLists() {
-        return playLists.getUrls();
     }
 }
