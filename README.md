@@ -21,7 +21,13 @@ mvn spring-boot:run
 mvn spring-boot:build-image
 
 # Run Docker container
-docker run --rm -p 8080:8080 pms:0.1.0-SNAPSHOT
+docker run -d -p 8080:8080 pms:0.1.0-SNAPSHOT
+
+# View container logs
+docker logs pms:0.1.0-SNAPSHOT
+
+# Follow logs in real-time
+docker logs -f pms:0.1.0-SNAPSHOT
 ```
 
 ## Testing
