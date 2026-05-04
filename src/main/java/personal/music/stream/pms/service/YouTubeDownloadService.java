@@ -10,8 +10,12 @@ import personal.music.stream.pms.config.YouTubePlaylistConfiguration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @Service
 public class YouTubeDownloadService {
@@ -38,15 +42,157 @@ public class YouTubeDownloadService {
 
     private void download(final String url, boolean simulate) {
         try {
-            final List<String> executable = configuration.getExecutableBase(simulate);
-            executable.add(url);
-            final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
-            final Process process = builder.start();
-            logOutput(process);
-            waitForFinish(process);
-        } catch (IOException | InterruptedException e) {
+            String videoId = extractVideoId(url);
+            if (videoId == null) {
+                log.warn("Could not extract video ID from URL: {}", url);
+                return;
+            }
+            
+            String filesFolder = configuration.getFilesFolder();
+            
+            // Download highest quality video
+            log.info("Downloading highest quality video...");
+            downloadVideo(url, simulate);
+            
+            // Download highest quality audio
+            log.info("Downloading highest quality audio...");
+            downloadAudio(url, simulate);
+            
+            // Find the downloaded video file
+            String videoFile = findVideoFile(filesFolder);
+            if (videoFile != null) {
+                // Extract thumbnail from 5th second
+                extractThumbnailFromFrame(videoFile);
+                
+                // Create info.json
+                createInfoJson(videoId, url, videoFile);
+                
+                log.info("Download complete for: {}", videoFile);
+            } else {
+                log.warn("No video file found after download");
+            }
+        } catch (Exception e) {
             log.error("YouTube downloader failed: {}", e.getMessage());
             throw new RuntimeException(e);
+        }
+    }
+
+    private void downloadVideo(String url, boolean simulate) throws IOException, InterruptedException {
+        String[] qualities = {"2160p", "1440p", "1080p", "720p", "480p"};
+        Exception lastException = null;
+        
+        for (String quality : qualities) {
+            log.info("Trying video quality: {}...", quality);
+            try {
+                final List<String> executable = configuration.getVideoExecutableBase(quality, simulate);
+                executable.add(url);
+                
+                final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
+                final Process process = builder.start();
+                logOutput(process);
+                waitForFinish(process);
+                
+                // Check if a video file was downloaded
+                String filesFolder = configuration.getFilesFolder();
+                String videoFile = findVideoFile(filesFolder);
+                if (videoFile != null) {
+                    log.info("Successfully downloaded video at quality: {}", quality);
+                    return;
+                }
+            } catch (Exception e) {
+                lastException = e;
+                log.warn("Quality {} not available, trying next...", quality);
+            }
+        }
+        
+        if (lastException != null) {
+            throw new RuntimeException("No video quality available", lastException);
+        }
+    }
+
+    private void downloadAudio(String url, boolean simulate) throws IOException, InterruptedException {
+        final List<String> executable = configuration.getAudioExecutableBase(simulate);
+        executable.add(url);
+        final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
+        final Process process = builder.start();
+        logOutput(process);
+        waitForFinish(process);
+    }
+
+    private String findVideoFile(String filesFolder) throws IOException {
+        Path folder = Paths.get(filesFolder);
+        if (!Files.exists(folder)) {
+            return null;
+        }
+        
+        try (Stream<Path> paths = Files.list(folder)) {
+            return paths.filter(path -> {
+                String name = path.getFileName().toString();
+                return name.endsWith(".mp4") && !name.endsWith(".info.json");
+            }).findFirst()
+            .map(Path::toString)
+            .orElse(null);
+        }
+    }
+
+    private String extractVideoId(String url) {
+        if (url.contains("v=")) {
+            String[] parts = url.split("v=");
+            if (parts.length > 1) {
+                String id = parts[1].split("[&?]")[0];
+                return id.isEmpty() ? null : id;
+            }
+        }
+        return null;
+    }
+
+    private void extractThumbnailFromFrame(String videoFile) throws IOException, InterruptedException {
+        String jpgFile = videoFile.replace(".mp4", ".jpg");
+        
+        ProcessBuilder pb = new ProcessBuilder(
+            "ffmpeg", "-y", "-i", videoFile, 
+            "-ss", "00:00:05", "-frames:v", "1", 
+            "-q:v", "2", jpgFile
+        );
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        p.waitFor();
+        log.info("Extracted thumbnail from 5th second: {}", jpgFile);
+    }
+
+    private void createInfoJson(String videoId, String url, String videoFile) throws IOException, InterruptedException {
+        String infoJsonFile = videoFile.replace(".mp4", ".info.json");
+        
+        ProcessBuilder pb = new ProcessBuilder(
+            "youtubedr", "info", url
+        );
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        
+        String title = null;
+        String channel = null;
+        
+        while ((line = reader.readLine()) != null) {
+            if (line.startsWith("Title:")) {
+                title = line.substring(6).trim();
+            } else if (line.startsWith("Author:")) {
+                channel = line.substring(7).trim();
+            }
+        }
+        p.waitFor();
+        
+        if (title != null && channel != null) {
+            String jsonContent = String.format(
+                "{\n  \"id\": \"%s\",\n  \"title\": \"%s\",\n  \"channel\": \"%s\",\n  \"upload_date\": \"20250101\"\n}",
+                videoId.replaceAll("[^a-zA-Z0-9-]", "-"),
+                title.replace("\"", "\\\""),
+                channel.replace("\"", "\\\"")
+            );
+            java.nio.file.Files.writeString(java.nio.file.Paths.get(infoJsonFile), jsonContent);
+            log.info("Created info.json: {}", infoJsonFile);
         }
     }
 

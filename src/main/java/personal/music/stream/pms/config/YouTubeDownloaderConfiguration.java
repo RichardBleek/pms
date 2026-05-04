@@ -18,7 +18,8 @@ public class YouTubeDownloaderConfiguration {
         this.filesFolder = filesFolder;
     }
 
-	private final List<String> defaultOptions = List.of("--quality", "medium");
+	private final List<String> defaultVideoOptions = List.of("download", "--quality", "2160p");
+	private final List<String> defaultAudioOptions = List.of("download", "--quality", "251");
 
     private String executable;
     private List<String> extraOptions = new ArrayList<>();
@@ -35,13 +36,29 @@ public class YouTubeDownloaderConfiguration {
         return extraOptions;
     }
 
-	public List<String> getExecutableBase(boolean simulate) {
+	public List<String> getVideoExecutableBase(String quality, boolean simulate) {
 		final List<String> executableBase = new ArrayList<>();
-		executableBase.add("download");
+		executableBase.add(executable);
 		executableBase.add("-d");
 		executableBase.add(filesFolder);
-		executableBase.addAll(defaultOptions);
+		executableBase.add("download");
+		executableBase.add("--quality");
+		executableBase.add(quality);
 		executableBase.addAll(extraOptions);
 		return executableBase;
+	}
+
+	public List<String> getAudioExecutableBase(boolean simulate) {
+		final List<String> executableBase = new ArrayList<>();
+		executableBase.add(executable);
+		executableBase.add("-d");
+		executableBase.add(filesFolder);
+		executableBase.addAll(defaultAudioOptions);
+		executableBase.addAll(extraOptions);
+		return executableBase;
+	}
+
+	public String getFilesFolder() {
+		return filesFolder;
 	}
 }

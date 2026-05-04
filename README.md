@@ -43,8 +43,25 @@ mvn test
 The `YouTubeDownloadServiceTest` is disabled by default as it requires `youtubedr` and network access.
 
 **Install youtubedr:**
+
+**macOS:**
 ```bash
 brew install youtubedr
+```
+
+**Linux (requires Go 1.26+):**
+```bash
+go install github.com/kkdai/youtube/v2/cmd/youtubedr@latest
+```
+
+**Arch Linux:**
+```bash
+yay -S youtubedr
+```
+
+**Verify installation:**
+```bash
+youtubedr version
 ```
 
 **Run the integration test:**

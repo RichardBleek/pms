@@ -26,6 +26,8 @@ public class MixService {
 
     private static List<String> imageExtensions = List.of(".jpg", ".png", ".webp");
     private static String fallbackImageExtension = ".jpg";
+    
+    private static List<String> audioExtensions = List.of(".webm", ".m4a", ".mp4", ".mp3");
 
     private String filesFolder;
     private String baseUrl;
@@ -65,12 +67,12 @@ public class MixService {
 
             String baseFileName = path.toString().replace(".info.json", "").replaceFirst(filesFolder, "");
             String imageFile = urlEncode(baseFileName) + determineImageFormat(baseFileName);
-            String audioFile = urlEncode(baseFileName) + ".m4a";
+            String audioFile = urlEncode(baseFileName) + determineAudioFormat(baseFileName);
 
             return new Mix(id, title, author,
                 baseUrl + "/file/" + urlEncode(baseFileName) + determineImageFormat(baseFileName),
-                baseUrl + "/file/" + urlEncode(baseFileName) + ".m4a",
-                           imageFile, audioFile, uploadDate);
+                baseUrl + "/file/" + urlEncode(baseFileName) + determineAudioFormat(baseFileName),
+                            imageFile, audioFile, uploadDate);
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
@@ -90,6 +92,12 @@ public class MixService {
         return imageExtensions.stream().filter(s -> filePresent(name, s))
                               .findFirst()
                               .orElseGet(this::fallbackImageExtension);
+    }
+
+    private String determineAudioFormat(String name) {
+        return audioExtensions.stream().filter(s -> filePresent(name, s))
+                              .findFirst()
+                              .orElse(".webm");
     }
 
     private String fallbackImageExtension() {

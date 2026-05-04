@@ -15,8 +15,7 @@ public class SceduleService {
         this.youTubeDownloadService = youTubeDownloadService;
     }
 
-    //uncomment to turn downloader back on
-    //@Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 60000)
     public void triggerDownload() {
         log.info("Starting download");
 

@@ -31,7 +31,7 @@
 <body>
 <div id="list_music">
     <div class="mix" th:each="mix: ${mixes}">
-        <a th:href="${@environment.getProperty('pms.hostName')} + ${@environment.getProperty('pms.applicationPath')} + @{/player/} + ${mix.id}">
+        <a th:href="@{/player/} + ${mix.id}">
             <img class="mix_img" th:src="${mix.imageUrl}" />
         </a>
         <p class="mix_text" th:text="${mix.name}"/>
