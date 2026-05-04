@@ -50,26 +50,14 @@ public class YouTubeDownloadService {
             
             String filesFolder = configuration.getFilesFolder();
             
-            // Download highest quality video
-            log.info("Downloading highest quality video...");
+            // Download video with audio included (highest available quality)
+            log.info("Downloading video with audio...");
             downloadVideo(url, simulate);
-            
-            // Download highest quality audio
-            log.info("Downloading highest quality audio...");
-            downloadAudio(url, simulate);
             
             // Find the downloaded video file
             String videoFile = findVideoFile(filesFolder);
             if (videoFile != null) {
-                // Combine video and audio
-                log.info("Combining video and audio...");
-                combineVideoAndAudio(videoFile);
-                
-                // Find the downloaded audio file
-                String audioFile = findAudioFile(filesFolder);
-                if (audioFile != null) {
-                    log.info("Successfully downloaded audio: {}", audioFile);
-                }
+                log.info("Successfully downloaded: {}", videoFile);
                 
                 // Extract thumbnail from 5th second
                 extractThumbnailFromFrame(videoFile);
@@ -88,45 +76,16 @@ public class YouTubeDownloadService {
     }
 
     private void downloadVideo(String url, boolean simulate) throws IOException, InterruptedException {
-        String[] qualities = {"2160p", "1440p", "1080p", "720p", "480p"};
-        Exception lastException = null;
-        
-        for (String quality : qualities) {
-            log.info("Trying video quality: {}...", quality);
-            try {
-                final List<String> executable = configuration.getVideoExecutableBase(quality, simulate);
-                executable.add(url);
-                
-                final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
-                final Process process = builder.start();
-                logOutput(process);
-                waitForFinish(process);
-                
-                // Check if a video file was downloaded
-                String filesFolder = configuration.getFilesFolder();
-                String videoFile = findVideoFile(filesFolder);
-                if (videoFile != null) {
-                    log.info("Successfully downloaded video at quality: {}", quality);
-                    return;
-                }
-            } catch (Exception e) {
-                lastException = e;
-                log.warn("Quality {} not available, trying next...", quality);
-            }
-        }
-        
-        if (lastException != null) {
-            throw new RuntimeException("No video quality available", lastException);
-        }
-    }
-
-    private void downloadAudio(String url, boolean simulate) throws IOException, InterruptedException {
-        final List<String> executable = configuration.getAudioExecutableBase(simulate);
+        log.info("Downloading video with audio (hd1080 or fallback)...");
+        final List<String> executable = configuration.getVideoExecutableBase("hd1080", simulate);
         executable.add(url);
+        
         final ProcessBuilder builder = new ProcessBuilder(executable).redirectErrorStream(true);
         final Process process = builder.start();
         logOutput(process);
         waitForFinish(process);
+        
+        log.info("Video download completed");
     }
 
     private String findVideoFile(String filesFolder) throws IOException {
@@ -138,79 +97,11 @@ public class YouTubeDownloadService {
         try (Stream<Path> paths = Files.list(folder)) {
             return paths.filter(path -> {
                 String name = path.getFileName().toString();
-                return name.endsWith(".mp4") && !name.endsWith(".info.json") && !name.contains(".combined");
+                return name.endsWith(".mp4") && !name.endsWith(".info.json");
             }).findFirst()
             .map(Path::toString)
             .orElse(null);
         }
-    }
-
-    private String findAudioFile(String filesFolder) throws IOException {
-        Path folder = Paths.get(filesFolder);
-        if (!Files.exists(folder)) {
-            return null;
-        }
-        
-        try (Stream<Path> paths = Files.list(folder)) {
-            return paths.filter(path -> {
-                String name = path.getFileName().toString();
-                return name.endsWith(".webm") || name.endsWith(".m4a") || name.endsWith(".mp4") || name.endsWith(".mp3");
-            }).filter(path -> {
-                String name = path.getFileName().toString();
-                return !name.contains(".combined");
-            }).findFirst()
-            .map(Path::toString)
-            .orElse(null);
-        }
-    }
-
-    private void combineVideoAndAudio(String videoFile) throws IOException, InterruptedException {
-        String combinedFile = videoFile.replace(".mp4", ".combined.mp4");
-        String audioFile = videoFile.replace(".mp4", ".webm");
-        
-        // If audio file doesn't exist, try other formats
-        if (!Files.exists(Paths.get(audioFile))) {
-            audioFile = videoFile.replace(".mp4", ".m4a");
-        }
-        if (!Files.exists(Paths.get(audioFile))) {
-            audioFile = videoFile.replace(".mp4", ".mp4");
-        }
-        if (!Files.exists(Paths.get(audioFile))) {
-            audioFile = videoFile.replace(".mp4", ".mp3");
-        }
-        
-        if (Files.exists(Paths.get(audioFile))) {
-            ProcessBuilder pb = new ProcessBuilder(
-                "ffmpeg", "-y", "-i", videoFile, "-i", audioFile, 
-                "-c:v", "copy", "-c:a", "aac", 
-                "-shortest", combinedFile
-            );
-            pb.redirectErrorStream(true);
-            Process p = pb.start();
-            p.waitFor();
-            
-            // Delete the original video file (video-only stream)
-            Files.deleteIfExists(Paths.get(videoFile));
-            
-            // Rename combined file to original name
-            Files.move(Paths.get(combinedFile), Paths.get(videoFile));
-            log.info("Combined video and audio: {}", videoFile);
-            
-            // Keep the separate audio file for audio-only playback
-        } else {
-            log.warn("Audio file not found, video will have no audio");
-        }
-    }
-
-    private String extractVideoId(String url) {
-        if (url.contains("v=")) {
-            String[] parts = url.split("v=");
-            if (parts.length > 1) {
-                String id = parts[1].split("[&?]")[0];
-                return id.isEmpty() ? null : id;
-            }
-        }
-        return null;
     }
 
     private void extractThumbnailFromFrame(String videoFile) throws IOException, InterruptedException {
@@ -261,6 +152,17 @@ public class YouTubeDownloadService {
             java.nio.file.Files.writeString(java.nio.file.Paths.get(infoJsonFile), jsonContent);
             log.info("Created info.json: {}", infoJsonFile);
         }
+    }
+
+    private String extractVideoId(String url) {
+        if (url.contains("v=")) {
+            String[] parts = url.split("v=");
+            if (parts.length > 1) {
+                String id = parts[1].split("[&?]")[0];
+                return id.isEmpty() ? null : id;
+            }
+        }
+        return null;
     }
 
     private void waitForFinish(final Process process) throws InterruptedException {
