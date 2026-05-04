@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.rometools.rome.feed.synd.SyndFeed;
 
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.*;
 import personal.music.stream.pms.mix.Mix;
@@ -17,13 +16,13 @@ import java.util.Date;
 @SpringBootTest
 public class FeedServiceTest {
 
-    @Mock
     MixService mixService;
 
     private FeedService feedService;
 
     @BeforeEach
     public void before() {
+        mixService = Mockito.mock(MixService.class);
         feedService = new FeedService(mixService, "http://localhost:8080", "pms");
 
         Mockito.when(mixService.mixStream()).thenReturn(Flux.just(
