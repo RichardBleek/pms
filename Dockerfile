@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM eclipse-temurin:25-jre-alpine
 VOLUME /tmp
 
 ARG JAR_FILE
