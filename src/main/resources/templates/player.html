@@ -10,34 +10,113 @@
 		body {
 			text-align:center;
 			color:#fff;
-
-			height: 100%;
+			margin: 0;
+			min-height: 100vh;
+			background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/placeholder.jpg');
+			background-size: cover;
 			background-position: center;
 			background-repeat: no-repeat;
-			background-size: cover;
 		}
-		h3{
-			text-shadow:1px 1px 1px #fff;
+		h2 {
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+			margin: 20px 0;
+			font-size: 2em;
+		}
+		.container-main {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 30px;
+			padding: 20px;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.container-thumbnail {
+			position: relative;
+			width: 100%;
+			max-width: 700px;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+		}
+		.container-thumbnail a {
+			display: block;
+			text-decoration: none;
+		}
+		.container-thumbnail img {
+			width: 100%;
+			display: block;
+		}
+		.play-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0,0,0,0.3);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background 0.3s;
+		}
+		.container-thumbnail a:hover .play-overlay {
+			background: rgba(0,0,0,0.5);
+		}
+		.play-button {
+			width: 80px;
+			height: 80px;
+			background: rgba(255,255,255,0.9);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+		}
+		.play-button::before {
+			content: '';
+			display: block;
+			width: 0;
+			height: 0;
+			border-left: 28px solid #333;
+			border-top: 16px solid transparent;
+			border-bottom: 16px solid transparent;
+			margin-left: 6px;
 		}
 		.container-audio {
-			width: 66%;
-			height: auto;
-			color: #444;
-			margin: 20px auto;
-			overflow: hidden;
+			width: 100%;
+			max-width: 700px;
+			background: rgba(255,255,255,0.1);
+			padding: 20px;
+			border-radius: 12px;
+			backdrop-filter: blur(10px);
+		}
+		.container-audio h3 {
+			margin: 0 0 15px 0;
+			font-size: 1.2em;
+			text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 		}
 		audio {
-			width:100%;
-		}
-		audio:nth-child(2), audio:nth-child(4), audio:nth-child(6) {
-			margin: 0;
+			width: 100%;
 		}
 	</style>
 </head>
-<body th:style="'background-image: url(' + ${mix.imageUrl} + ');'">
-	<h2 th:text="${mix.name}"></h2>
-	<div class="container-audio">
-		<audio controls autoplay th:src="@{/file/} + ${mix.audioFile}" id="audio"></audio>
+<body th:style="'background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(' + ${mix.imageUrl} + ');'">
+	<div class="container-main">
+		<h2 th:text="${mix.name}"></h2>
+		
+		<div class="container-thumbnail">
+			<a th:href="@{/video/} + ${mix.id}">
+				<img th:src="${mix.imageUrl}" alt="Thumbnail"/>
+				<div class="play-overlay">
+					<div class="play-button"></div>
+				</div>
+			</a>
+		</div>
+		
+		<div class="container-audio">
+			<h3>Audio Player</h3>
+			<audio controls th:src="@{/file/} + ${mix.audioFile}"></audio>
+		</div>
 	</div>
 </body>
 </html>

@@ -33,4 +33,16 @@ public class WebController {
 		return "player";
 	}
 
+	@GetMapping("${pms.applicationPath}/video/{mix_id}")
+	public String videoPlayer(@PathVariable String mix_id, Model model) {
+	    model.addAttribute("mix", mixService.mixMono(mix_id));
+		return "video-player";
+	}
+
+	@GetMapping("${pms.applicationPath}/audio/{mix_id}")
+	public String audioPlayer(@PathVariable String mix_id, Model model) {
+	    model.addAttribute("mix", mixService.mixMono(mix_id));
+		return "audio-player";
+	}
+
 }

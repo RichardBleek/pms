@@ -61,6 +61,16 @@ public class YouTubeDownloadService {
             // Find the downloaded video file
             String videoFile = findVideoFile(filesFolder);
             if (videoFile != null) {
+                // Combine video and audio
+                log.info("Combining video and audio...");
+                combineVideoAndAudio(videoFile);
+                
+                // Find the downloaded audio file
+                String audioFile = findAudioFile(filesFolder);
+                if (audioFile != null) {
+                    log.info("Successfully downloaded audio: {}", audioFile);
+                }
+                
                 // Extract thumbnail from 5th second
                 extractThumbnailFromFrame(videoFile);
                 
@@ -128,10 +138,67 @@ public class YouTubeDownloadService {
         try (Stream<Path> paths = Files.list(folder)) {
             return paths.filter(path -> {
                 String name = path.getFileName().toString();
-                return name.endsWith(".mp4") && !name.endsWith(".info.json");
+                return name.endsWith(".mp4") && !name.endsWith(".info.json") && !name.contains(".combined");
             }).findFirst()
             .map(Path::toString)
             .orElse(null);
+        }
+    }
+
+    private String findAudioFile(String filesFolder) throws IOException {
+        Path folder = Paths.get(filesFolder);
+        if (!Files.exists(folder)) {
+            return null;
+        }
+        
+        try (Stream<Path> paths = Files.list(folder)) {
+            return paths.filter(path -> {
+                String name = path.getFileName().toString();
+                return name.endsWith(".webm") || name.endsWith(".m4a") || name.endsWith(".mp4") || name.endsWith(".mp3");
+            }).filter(path -> {
+                String name = path.getFileName().toString();
+                return !name.contains(".combined");
+            }).findFirst()
+            .map(Path::toString)
+            .orElse(null);
+        }
+    }
+
+    private void combineVideoAndAudio(String videoFile) throws IOException, InterruptedException {
+        String combinedFile = videoFile.replace(".mp4", ".combined.mp4");
+        String audioFile = videoFile.replace(".mp4", ".webm");
+        
+        // If audio file doesn't exist, try other formats
+        if (!Files.exists(Paths.get(audioFile))) {
+            audioFile = videoFile.replace(".mp4", ".m4a");
+        }
+        if (!Files.exists(Paths.get(audioFile))) {
+            audioFile = videoFile.replace(".mp4", ".mp4");
+        }
+        if (!Files.exists(Paths.get(audioFile))) {
+            audioFile = videoFile.replace(".mp4", ".mp3");
+        }
+        
+        if (Files.exists(Paths.get(audioFile))) {
+            ProcessBuilder pb = new ProcessBuilder(
+                "ffmpeg", "-y", "-i", videoFile, "-i", audioFile, 
+                "-c:v", "copy", "-c:a", "aac", 
+                "-shortest", combinedFile
+            );
+            pb.redirectErrorStream(true);
+            Process p = pb.start();
+            p.waitFor();
+            
+            // Delete the original video file (video-only stream)
+            Files.deleteIfExists(Paths.get(videoFile));
+            
+            // Rename combined file to original name
+            Files.move(Paths.get(combinedFile), Paths.get(videoFile));
+            log.info("Combined video and audio: {}", videoFile);
+            
+            // Keep the separate audio file for audio-only playback
+        } else {
+            log.warn("Audio file not found, video will have no audio");
         }
     }
 

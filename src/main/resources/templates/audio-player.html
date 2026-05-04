@@ -1,0 +1,93 @@
+<html xmlns:th="http://thymeleaf.org">
+<head>
+	<title>Audio Player - Personal Music Stream</title>
+	<link href='https://fonts.googleapis.com/css?family=Allerta' rel='stylesheet'>
+    <style>
+		* {
+			font-family: 'Allerta', arial, Tahoma, serif;
+			box-sizing: border-box;
+		}
+		body {
+			text-align:center;
+			color:#fff;
+			margin: 0;
+			min-height: 100vh;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+		}
+		.back-link {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			color: #fff;
+			text-decoration: none;
+			background: rgba(255,255,255,0.2);
+			padding: 10px 20px;
+			border-radius: 8px;
+		}
+		.back-link:hover {
+			background: rgba(255,255,255,0.3);
+		}
+		.player-container {
+			background: rgba(255,255,255,0.1);
+			padding: 30px;
+			border-radius: 12px;
+			backdrop-filter: blur(10px);
+			max-width: 600px;
+			width: 90%;
+		}
+		.album-art {
+			width: 100%;
+			max-width: 400px;
+			border-radius: 8px;
+			margin-bottom: 20px;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+		}
+		h2 {
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+			margin: 10px 0 20px 0;
+			font-size: 1.5em;
+		}
+		audio {
+			width: 100%;
+			margin: 20px 0;
+		}
+		.video-link {
+			color: #fff;
+			text-decoration: none;
+			background: rgba(255,255,255,0.2);
+			padding: 10px 20px;
+			border-radius: 8px;
+			display: inline-block;
+			margin-top: 20px;
+		}
+		.video-link:hover {
+			background: rgba(255,255,255,0.3);
+		}
+	</style>
+</head>
+<body th:style="'background-image: url(' + ${mix.imageUrl} + ');'">
+	<div class="container">
+		<a th:href="@{/player}" class="back-link">&lt; Back to List</a>
+		
+		<div class="player-container">
+			<img th:src="${mix.imageUrl}" class="album-art" alt="Album Art"/>
+			<h2 th:text="${mix.name}"></h2>
+			<audio controls autoplay>
+				<source th:src="@{/file/} + ${mix.audioFile}" type="audio/webm">
+				Your browser does not support the audio tag.
+			</audio>
+			<a th:href="@{/video/} + ${mix.id}" class="video-link">Watch Video Version</a>
+		</div>
+	</div>
+</body>
+</html>
