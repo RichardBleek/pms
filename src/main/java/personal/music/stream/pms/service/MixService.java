@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.*;
+import java.io.File;
 import java.util.*;
 import java.util.stream.*;
 
@@ -66,6 +67,10 @@ public class MixService {
             Date uploadDate = new SimpleDateFormat("yyyyMMdd").parse(uploadDateString);
 
             String baseFileName = path.toString().replace(".info.json", "").replaceFirst(filesFolder, "");
+        // Remove leading file separator if present to avoid encoding '/' in URLs
+        if (baseFileName.startsWith(java.io.File.separator)) {
+            baseFileName = baseFileName.substring(1);
+        }
             String imageFile = urlEncode(baseFileName) + determineImageFormat(baseFileName);
             String audioFile = urlEncode(baseFileName) + determineAudioFormat(baseFileName);
 
